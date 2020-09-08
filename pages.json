@@ -1,0 +1,19 @@
+{
+  "globalStyle": {
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTextStyle": "black"
+  },
+  "pages": [
+    {
+      "path": "pages/chat/chat",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": ""
+      }
+    }
+  ],
+  "easycom": {
+    "autoscan": true,
+    "^u-(.*)": "uview-ui/components/u-$1/u-$1.vue"
+  }
+}
