@@ -1,9 +1,10 @@
 <template>
-  <view class="voice-box" @click="playVoiceMessage">
+  <view class="voice-box">
     <message-container
-      :sender-avatar-url="message.senderAvatarUrl"
-      :sender-name="message.senderName"
+      :message="message"
       :is-owned="isOwned"
+      @retry="retry"
+      @contentClick="playVoiceMessage"
     >
       <template>
         <view class="voice-content" :class="{ owned: isOwned }">
@@ -49,6 +50,9 @@ export default {
   methods: {
     playVoiceMessage() {
       this.$emit('playVoiceMessage', this.message)
+    },
+    retry() {
+      this.$messageManager.sendVoice(this.message)
     }
   }
 }

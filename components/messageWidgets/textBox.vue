@@ -1,10 +1,6 @@
 <template>
   <view class="text-box">
-    <message-container
-      :sender-avatar-url="message.senderAvatarUrl"
-      :sender-name="message.senderName"
-      :is-owned="isOwned"
-    >
+    <message-container :message="message" :is-owned="isOwned" @retry="retry">
       <template>
         <text user-select>{{ message.content }}</text>
       </template>
@@ -22,7 +18,11 @@ export default {
   data() {
     return {}
   },
-  methods: {}
+  methods: {
+    retry() {
+      this.$messageManager.sendText(this.message)
+    }
+  }
 }
 </script>
 <style lang="scss" scoped></style>

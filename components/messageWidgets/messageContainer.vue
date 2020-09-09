@@ -1,13 +1,22 @@
 <template>
   <view class="message-container" :class="{ owned: isOwned }">
-    <image :src="senderAvatarUrl" class="avatar" mode="aspectFill" />
-    <view class="content">
+    <image :src="message.senderAvatarUrl" class="avatar" mode="aspectFill" />
+    <view class="content" @click="contentClick">
       <!-- <view class="name">
         {{ senderName }}
       </view> -->
       <view class="arrow" :class="[isOwned ? 'right' : 'left']" />
       <view class="message">
         <slot />
+      </view>
+      <view
+        v-if="retryLoading && message.loading && !message.isSent"
+        class="retry-loading"
+      >
+        <u-loading mode="circle" color="red" size="30" />
+      </view>
+      <view v-if="!message.loading && !message.isSent" class="status">
+        <u-icon name="info-circle-fill" color="#f00" />
       </view>
     </view>
   </view>
@@ -16,13 +25,11 @@
 <script>
 export default {
   props: {
-    senderAvatarUrl: {
-      type: String,
-      default: ''
-    },
-    senderName: {
-      type: String,
-      default: ''
+    message: {
+      type: Object,
+      default() {
+        return null
+      }
     },
     isOwned: {
       type: Boolean,
@@ -30,9 +37,20 @@ export default {
     }
   },
   data() {
-    return {}
+    return {
+      retryLoading: false
+    }
   },
-  methods: {}
+  methods: {
+    contentClick() {
+      if (!this.message.loading && !this.message.isSent) {
+        this.retryLoading = true
+        this.$emit('retry')
+      } else {
+        this.$emit('contentClick')
+      }
+    }
+  }
 }
 </script>
 <style lang="scss" scoped>
@@ -80,6 +98,13 @@ export default {
       word-break: break-all;
       display: flex;
       align-items: center;
+    }
+    .retry-loading,
+    .status {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      margin: 0 5px;
     }
   }
   &.owned {

@@ -1,16 +1,12 @@
 <template>
   <view class="class">
     <message-container
-      :sender-avatar-url="message.senderAvatarUrl"
-      :sender-name="message.senderName"
+      :message="message"
       :is-owned="isOwned"
+      @retry="retry"
+      @contentClick="preview"
     >
-      <u-image
-        :src="message.content"
-        width="150rpx"
-        mode="widthFix"
-        @click="preview"
-      />
+      <u-image :src="message.content" width="150rpx" mode="widthFix" />
     </message-container>
   </view>
 </template>
@@ -28,6 +24,9 @@ export default {
   methods: {
     preview() {
       ImageHelpers.previewImage(this.message.content)
+    },
+    retry() {
+      this.$messageManager.sendImage(this.message)
     }
   }
 }

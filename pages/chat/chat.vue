@@ -6,29 +6,31 @@
     <chat-head />
     <view class="chat-main">
       <view v-for="item in messageList" :key="item.id" class="message">
-        <text-box
-          v-if="item.contentType === messageType.text"
-          :message="item"
-          @sendMessageComplete="sendMessageComplete"
-          @sendMessageSuccess="sendMessageSuccess"
-          @sendMessageFail="sendMessageFail"
-        />
-        <voice-box
-          v-else-if="item.contentType === messageType.voice"
-          :message="item"
-          :voice-playing-id="voicePlayingId"
-          @sendMessageComplete="sendMessageComplete"
-          @sendMessageSuccess="sendMessageSuccess"
-          @sendMessageFail="sendMessageFail"
-          @playVoiceMessage="playVoiceMessage"
-        />
-        <image-box
-          v-else-if="item.contentType === messageType.image"
-          :message="item"
-          @sendMessageComplete="sendMessageComplete"
-          @sendMessageSuccess="sendMessageSuccess"
-          @sendMessageFail="sendMessageFail"
-        />
+        <block v-if="item">
+          <text-box
+            v-if="item.contentType === messageType.text"
+            :message="item"
+            @sendMessageComplete="sendMessageComplete"
+            @sendMessageSuccess="sendMessageSuccess"
+            @sendMessageFail="sendMessageFail"
+          />
+          <voice-box
+            v-else-if="item.contentType === messageType.voice"
+            :message="item"
+            :voice-playing-id="voicePlayingId"
+            @sendMessageComplete="sendMessageComplete"
+            @sendMessageSuccess="sendMessageSuccess"
+            @sendMessageFail="sendMessageFail"
+            @playVoiceMessage="playVoiceMessage"
+          />
+          <image-box
+            v-else-if="item.contentType === messageType.image"
+            :message="item"
+            @sendMessageComplete="sendMessageComplete"
+            @sendMessageSuccess="sendMessageSuccess"
+            @sendMessageFail="sendMessageFail"
+          />
+        </block>
       </view>
     </view>
     <message-input
@@ -124,9 +126,11 @@ export default {
     },
     sendMessageSuccess(messageInstance) {
       this.replaceMessageItem(messageInstance)
+      console.log('发送成功')
     },
     sendMessageFail(messageInstance) {
       this.replaceMessageItem(messageInstance)
+      console.log('发送失败')
     },
     replaceMessageItem(messageInstance) {
       const n = this.messageList.findIndex(
