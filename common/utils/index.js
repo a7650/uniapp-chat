@@ -2,7 +2,7 @@
  * @Author: zhang zhipeng
  * @Date: 2020-02-01 17:26:58
  * @Last Modified by: zhang zhipeng
- * @Last Modified time: 2020-09-03 10:34:38
+ * @Last Modified time: 2020-09-09 18:38:36
  */
 import moment from '@/vueInit/momentConfig'
 import ImageHelpers from './imageHelpers'
@@ -110,30 +110,5 @@ export function getImageInfo(src) {
             }
         })
     })
-}
-
-/**
- * 获取规格的图片
- */
-export function getPurchaseUnitCover(purchaseUnit) {
-    try {
-        if (!purchaseUnit) {
-            return ''
-        }
-        const { cover, compositions } = purchaseUnit
-        if (cover && cover.url) {
-            return cover.url
-        }
-        if (compositions && compositions.length > 0) {
-            const compositionItem = compositions.find(item => {
-                return item.product && item.product.cover && (item.product.cover.length > 0)
-            })
-            return (compositionItem && compositionItem.product.cover[0].url) || ''
-        }
-        return ''
-    } catch (e) {
-        console.log(e)
-        return ''
-    }
 }
 

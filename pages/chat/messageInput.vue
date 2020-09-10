@@ -21,7 +21,7 @@
         <input
           v-if="chatType === messageType.text"
           id="input"
-          v-model="textMessageContent"
+          v-model.trim="textMessageContent"
           type="text"
           class="content"
           placeholder-style="color:#DDDDDD;"
@@ -80,16 +80,22 @@
     <!-- 语音动画 -->
     <view v-if="recording" class="voice-an">
       <view class="voice-an-icon">
-        <view v-for="item in 9" :key="item" class="wave" />
+        <view
+          v-for="item in 10"
+          :key="item"
+          class="wave"
+          :class="{ fill: voiceTime >= (item + 1) * 6 }"
+        />
       </view>
       <block v-if="!isCanceledRecord">
-        <view class="text">正在录音...</view>
+        <view class="text">{{
+          isMaxVoiceTime ? '录音已达最大长度' : '正在录音...'
+        }}</view>
         <view class="cancel-tip"> 手指上滑 取消发送 </view>
       </block>
       <block v-else>
         <view class="cancel-tip"> 松开手指 取消发送 </view>
       </block>
-      <view class="voice-time" />
     </view>
   </view>
 </template>
@@ -133,6 +139,9 @@ export default {
     },
     functionBoxVisible() {
       return this.currentFocus === 'funBox'
+    },
+    isMaxVoiceTime() {
+      return this.voiceTime === 60
     }
   },
   watch: {
@@ -148,7 +157,15 @@ export default {
     })
     this.recorder.onStop((res) => {
       clearInterval(this.voiceInterval)
-      this.sendVoiceMsg(res)
+      if (this.isStopRecord) {
+        // 用户松开手指主动停止
+        this.sendVoiceMsg(res)
+      } else {
+        // 超过duration最大值停止
+        this.voiceTime = 60
+        this.recordTmpRes = res
+        uni.vibrateShort()
+      }
     })
   },
   methods: {
@@ -156,10 +173,13 @@ export default {
       this.chatType = type
     },
     sendTextMsg() {
+      if (!this.textMessageContent) return
       this.$messageManager.sendText(this.textMessageContent)
       this.textMessageContent = ''
     },
-    sendVoiceMsg({ tempFilePath, duration }) {
+    sendVoiceMsg(res) {
+      if (!res) return
+      const { tempFilePath, duration } = res
       this.recording = false
       if (this.isStopRecord && !this.isCanceledRecord) {
         if (duration < 600) {
@@ -183,8 +203,10 @@ export default {
       this.isStopRecord = false
       this.recordPointY = e.touches[0].clientY
       this.voiceTime = 0
+      this.recordTmpRes = null
       this.recorder.start({
-        format: 'mp3'
+        format: 'mp3',
+        duration: 60000
       })
     },
     beginVoice() {
@@ -202,8 +224,12 @@ export default {
       this.isCanceledRecord = slideY > uni.upx2px(120)
     },
     endVoice() {
-      this.isStopRecord = true // 该录音已完成，防止重复录制
-      this.recorder.stop()
+      this.isStopRecord = true
+      if (this.isMaxVoiceTime) {
+        this.sendVoiceMsg(this.recordTmpRes)
+      } else {
+        this.recorder.stop()
+      }
     },
     cancelVoice(e) {
       this.voiceTime = 0
@@ -342,6 +368,8 @@ $input-background: rgb(246, 246, 246);
   align-items: center;
   text-align: center;
   z-index: 1;
+  font-size: 14px;
+  color: rgb(175, 175, 175);
   .text {
     padding-top: 30rpx;
   }
@@ -359,7 +387,7 @@ $input-background: rgb(246, 246, 246);
       height: 50%;
     }
     100% {
-      height: 0%;
+      height: 10%;
     }
   }
   .voice-an-icon {
@@ -373,9 +401,12 @@ $input-background: rgb(246, 246, 246);
     height: 100%;
     margin-left: 10rpx;
     border-radius: 50rpx;
-    background-color: $color-theme;
     vertical-align: middle;
     display: inline-block;
+    background-color: #fff;
+    &.fill {
+      background-color: $color-theme;
+    }
     &:nth-child(1) {
       animation: runVoice 0.6s infinite 0.1s;
     }
@@ -402,6 +433,9 @@ $input-background: rgb(246, 246, 246);
     }
     &:nth-child(9) {
       animation: runVoice 0.6s infinite 0.6s;
+    }
+    &:nth-child(10) {
+      animation: runVoice 0.6s infinite 0.1s;
     }
   }
   .voice-time {

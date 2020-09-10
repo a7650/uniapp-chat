@@ -3,10 +3,18 @@
     <message-container
       :message="message"
       :is-owned="isOwned"
+      background-color="transparent"
+      first-loading
       @retry="retry"
       @contentClick="preview"
     >
-      <u-image :src="message.content" width="150rpx" mode="widthFix" />
+      <!-- <image show-menu-by-longpress :src="message.content" /> -->
+      <u-image
+        :src="message.content"
+        width="150rpx"
+        mode="widthFix"
+        :show-menu-by-longpress="true"
+      />
     </message-container>
   </view>
 </template>

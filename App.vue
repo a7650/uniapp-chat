@@ -6,6 +6,9 @@ export default {
 
 <style lang="scss">
 /*每个页面公共css */
+/* page{
+  background-color: #eeeeee;
+} */
 * {
   font-size: 14px;
 }

@@ -10,6 +10,18 @@
         "navigationStyle": "custom",
         "navigationBarTitleText": ""
       }
+    },
+    {
+      "path": "pages/login/login",
+      "style": {
+        "navigationBarTitleText": "登录"
+      }
+    },
+    {
+      "path": "pages/login/code",
+      "style": {
+        "navigationBarTitleText": "登录验证码"
+      }
     }
   ],
   "easycom": {

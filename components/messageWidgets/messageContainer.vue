@@ -5,8 +5,15 @@
       <!-- <view class="name">
         {{ senderName }}
       </view> -->
-      <view class="arrow" :class="[isOwned ? 'right' : 'left']" />
-      <view class="message">
+      <view
+        class="arrow"
+        :class="[isOwned ? 'right' : 'left']"
+        :style="{ color: backgroundColor || mixin_colorTheme }"
+      />
+      <view
+        class="message"
+        :style="{ backgroundColor: backgroundColor || mixin_colorTheme }"
+      >
         <slot />
       </view>
       <view
@@ -34,11 +41,25 @@ export default {
     isOwned: {
       type: Boolean,
       default: false
+    },
+    backgroundColor: {
+      type: String,
+      default: null
+    },
+    // 是否在首次发送时就显示loading动画
+    firstLoading: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
       retryLoading: false
+    }
+  },
+  created() {
+    if (this.firstLoading) {
+      this.retryLoading = true
     }
   },
   methods: {
@@ -82,10 +103,10 @@ export default {
       width: 0;
       height: 0;
       &.left {
-        border-right-color: $color-theme;
+        border-right-color: currentColor;
       }
       &.right {
-        border-left-color: $color-theme;
+        border-left-color: currentColor;
       }
     }
     .message {

@@ -4,7 +4,7 @@
     :style="{ paddingBottom: keyboardHeight + 65 + 'px' }"
   >
     <chat-head />
-    <view class="chat-main">
+    <view class="chat-main" @touchstart="chatMainTouch">
       <view v-for="item in messageList" :key="item.id" class="message">
         <block v-if="item">
           <text-box
@@ -34,6 +34,7 @@
       </view>
     </view>
     <message-input
+      ref="messageInput"
       :keyboard-height.sync="keyboardHeight"
       @sendMessageComplete="sendMessageComplete"
       @sendMessageSuccess="sendMessageSuccess"
@@ -105,23 +106,23 @@ export default {
     sendMessageComplete(messageInstance) {
       if (!this.replaceMessageItem(messageInstance)) {
         this.addMessage(messageInstance)
-        setTimeout(() => {
-          const newMessage = {
-            ...messageInstance,
-            id: String(Math.random()),
-            senderId: 'service'
-          }
-          if (newMessage.contentType === 'text') {
-            const content = newMessage.content
-            newMessage.content = content
-              .replace('你', '我')
-              .replace('吗', '')
-              .replace('为什么', '')
-              .replace('谁', '客服')
-              .replace('?', '!')
-          }
-          this.addMessage(newMessage)
-        })
+        // setTimeout(() => {
+        //   const newMessage = {
+        //     ...messageInstance,
+        //     id: String(Math.random()),
+        //     senderId: 'service'
+        //   }
+        //   if (newMessage.contentType === 'text') {
+        //     const content = newMessage.content
+        //     newMessage.content = content
+        //       .replace('你', '我')
+        //       .replace('吗', '')
+        //       .replace('为什么', '')
+        //       .replace('谁', '客服')
+        //       .replace('?', '!')
+        //   }
+        //   this.addMessage(newMessage)
+        // })
       }
     },
     sendMessageSuccess(messageInstance) {
@@ -154,6 +155,11 @@ export default {
           duration: 100
         })
       }, 100)
+    },
+    chatMainTouch() {
+      if (this.keyboardHeight > 0) {
+        this.$refs.messageInput.panelFocusChange(0)
+      }
     }
   }
 }
