@@ -64,6 +64,9 @@ export default {
   flex-direction: row-reverse;
   height: 18px;
   padding: 0 4px;
+  .duration {
+    color: #000;
+  }
   &.owned {
     flex-direction: row;
     justify-content: flex-end;

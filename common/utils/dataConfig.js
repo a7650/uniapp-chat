@@ -1,11 +1,12 @@
+/* eslint-disable no-unused-vars */
 /*
  * @Author: zhang zhipeng
  * @Date: 2020-02-01 17:26:51
  * @Last Modified by: zhang zhipeng
- * @Last Modified time: 2020-08-25 10:44:55
+ * @Last Modified time: 2020-09-19 23:00:38
  */
 
-export const ENV = 'test' // 当前环境 test/production
+export const ENV = process.env.NODE_ENV // 当前环境
 
 export const APPID = ''
 

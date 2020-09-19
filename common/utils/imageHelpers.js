@@ -1,8 +1,5 @@
 import Vue from 'vue'
 
-// 头像占用二维码的比例（头像宽/二维码宽）
-export const AVATAR_SCALE_IN_QRCODE = 0.45
-
 let imgCount = 0
 
 export default class ImgHelpers {
@@ -78,16 +75,17 @@ export default class ImgHelpers {
             })
         })
     }
-
-    /**
-     * 计算头像的位置和大小
-     * 位置是相对于二维码的位置，以二维码的左上角为顶点
-     */
-    static getAvatarPosition(qrCodeSize) {
-        const width = qrCodeSize.width * AVATAR_SCALE_IN_QRCODE
-        const height = qrCodeSize.height * AVATAR_SCALE_IN_QRCODE
-        const top = (qrCodeSize.height - height) / 2
-        const left = (qrCodeSize.width - width) / 2
-        return { width, height, top, left }
+    static getImageInfo(src) {
+        return new Promise((resolve, reject) => {
+            wx.getImageInfo({
+                src,
+                success(res) {
+                    resolve(res)
+                },
+                fail(err) {
+                    reject(err)
+                }
+            })
+        })
     }
 }

@@ -3,32 +3,27 @@
  * @Author: zhang zhipeng
  * @Date: 2020-02-01 17:23:52
  * @Last Modified by: zhang zhipeng
- * @Last Modified time: 2020-09-03 10:18:04
+ * @Last Modified time: 2020-09-18 16:23:11
  * request配置
  */
 
-import request from 'wx-axios-graphql'
+import request from '../request'
 import { TOKEN_KEY } from '@/common/utils/storageKeys'
 import { ENV } from '@/common/utils/dataConfig'
 
-const GQL_TEST_URL = ''
-
-const REST_TEST_URL = ''
+const REST_TEST_URL = '' // 测试环境url
+const REST_PRODUCTION_URL = '' // 生产环境url
 
 export const gql = new request.graphQL({
-    // url: "http://192.168.0.41:8081/api/mall/graphql",
-    url: ENV === 'test' ? GQL_TEST_URL : '',
+    url: ENV === 'development' ? '' : '',
     custom: false, // 是否关闭编译器的编译，即手动写query语句
-    logger: ENV === 'test' // 是否打印请求日志
+    logger: ENV === 'development' // 是否打印请求日志
 })
 
 const URLs = {
-    // test: "http://192.168.0.41:8081/api",
-    test: REST_TEST_URL,
-    production: ''
+    development: REST_TEST_URL,
+    production: REST_PRODUCTION_URL
 }
-
-export const BASE_URL_REST = URLs[ENV]
 
 let networkConnected = true
 
@@ -38,7 +33,7 @@ const gqlErrorIgnore = [] // 忽略error
  * 该方法只设置普通rest请求的url
  * @param {String} env
  */
-export const setBaseURL = (env = 'test') => (request.defaults.baseURL = URLs[env])
+export const setBaseURL = (env) => (request.defaults.baseURL = URLs[env])
 
 setBaseURL(ENV)
 
@@ -97,7 +92,7 @@ const interceptorRequest = [
     }
 ]
 
-const interceptorRsesponse = [
+const interceptorResponse = [
     res => {
         const { statusCode, data, config } = res
         let errorHandler = responseErrorHandler[`statusCode${statusCode}`]
@@ -107,7 +102,6 @@ const interceptorRsesponse = [
         if (errorHandler) {
             // 如果需要对特定的状态码处理，在responseErrorHandler里处理
             errorHandler(config)
-
             return Promise.reject(data)
         }
         return Promise.resolve(config.isGql ? res : data)
@@ -140,8 +134,8 @@ const gqlErrorHandler = res => {
 
 request.interceptors.request.use(...interceptorRequest)
 gql.client.interceptors.request.use(...interceptorRequest)
-request.interceptors.response.use(...interceptorRsesponse)
-gql.client.interceptors.response.use(...interceptorRsesponse)
+request.interceptors.response.use(...interceptorResponse)
+gql.client.interceptors.response.use(...interceptorResponse)
 gql.client.interceptors.response.use(gqlErrorHandler)
 
 export default request

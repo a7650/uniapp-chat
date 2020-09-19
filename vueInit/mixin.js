@@ -1,16 +1,10 @@
 export default {
     data() {
         return {
-            mixin_colorTheme: 'rgb(5, 192, 96)',
-            mixin_colorGray: '#b5b5b5'
+            mixin_colorTheme: 'rgb(106, 86, 181)'
         }
     },
     methods: {
-        $_setClipBoardData(data) {
-            wx.setClipboardData({
-                data: data
-            })
-        },
         $_setTabBarIndex(index) {
             if (typeof this.$mp.page.getTabBar === 'function' &&
                 this.$mp.page.getTabBar()) {

@@ -5,15 +5,8 @@
       <!-- <view class="name">
         {{ senderName }}
       </view> -->
-      <view
-        class="arrow"
-        :class="[isOwned ? 'right' : 'left']"
-        :style="{ color: backgroundColor || mixin_colorTheme }"
-      />
-      <view
-        class="message"
-        :style="{ backgroundColor: backgroundColor || mixin_colorTheme }"
-      >
+      <view class="arrow" :class="[isOwned ? 'right' : 'left']" />
+      <view class="message">
         <slot />
       </view>
       <view
@@ -97,22 +90,14 @@ export default {
       margin-bottom: 6px;
     }
     .arrow {
-      /* background-color: $color-theme; */
       margin-top: 12px;
       border: 6px solid transparent;
       width: 0;
       height: 0;
-      &.left {
-        border-right-color: currentColor;
-      }
-      &.right {
-        border-left-color: currentColor;
-      }
     }
     .message {
       max-width: 400rpx;
       color: #fff;
-      background-color: $color-theme;
       font-size: 14px;
       border-radius: 8px;
       padding: 4px 6px;
@@ -128,12 +113,23 @@ export default {
       margin: 0 5px;
     }
   }
+  .arrow {
+    color: #000;
+    border-right-color: #fff;
+  }
+  .message {
+    color: #000;
+    background-color: #fff;
+  }
   &.owned {
     flex-direction: row-reverse;
     .content {
       flex-direction: row-reverse;
-      .name {
-        text-align: right;
+      .arrow {
+        border-left-color: $color-theme-l;
+      }
+      .message {
+        background-color: $color-theme-l;
       }
     }
   }
